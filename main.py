@@ -7,7 +7,15 @@ cid = "4621674ac5b94fdeab73a3561b46ab3c"
 secret = "abbbe4289b6c430296e26d2ca99ab8f0"
 username = "damon.black.dwb"
 # space seperated when using multiple scopes
-scope = "user-read-currently-playing user-modify-playback-state playlist-modify-public user-library-read user-library-modify"
+scopes = [
+    "user-read-currently-playing",
+    "user-modify-playback-state",
+    "playlist-modify-public",
+    "user-library-read",
+    "user-library-modify",
+]
+
+scope = " ".join(scopes)
 
 token = util.prompt_for_user_token(
     username,
@@ -100,8 +108,5 @@ def main():
     while True:
         prompt_for_command(options)
 
-
-# get_current_song()
-# pause_song()
 
 main()
