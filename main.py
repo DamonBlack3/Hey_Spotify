@@ -71,6 +71,10 @@ def skip_song():
     sp.next_track()
 
 
+def set_volume(volume):
+    sp.volume(int(volume))
+
+
 def previous_song():
     sp.previous_track()
 
@@ -87,14 +91,16 @@ def prompt_for_command(options):
     print("what to do...")
     response = input()
 
-    if options.get(response) != None:
-        if response == "shuffle off":
-            options[response](False)
-        elif response == "repeat song":
-            options[response]("track")
-        elif response == "repeat off":
-            options[response]("off")
-        else:
+    if response == "shuffle off":
+        options[response](False)
+    elif response == "repeat song":
+        options[response]("track")
+    elif response == "repeat off":
+        options[response]("off")
+    elif "set volume" in response:
+        options["set volume"](response.split(" ")[2])
+    else:
+        if options.get(response) != None:
             options[response]()
 
 
@@ -113,6 +119,7 @@ def main():
         "repeat off": toggle_repeat,
         "skip": skip_song,
         "previous": previous_song,
+        "set volume": set_volume,
     }
 
     while True:
