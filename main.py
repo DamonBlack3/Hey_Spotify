@@ -67,6 +67,14 @@ def unlike_song():
     sp.current_user_saved_tracks_delete([song])
 
 
+def skip_song():
+    sp.next_track()
+
+
+def previous_song():
+    sp.previous_track()
+
+
 def toggle_shuffle(status=True):
     sp.shuffle(status)
 
@@ -103,6 +111,8 @@ def main():
         "repeat": toggle_repeat,
         "repeat song": toggle_repeat,
         "repeat off": toggle_repeat,
+        "skip": skip_song,
+        "previous": previous_song,
     }
 
     while True:
