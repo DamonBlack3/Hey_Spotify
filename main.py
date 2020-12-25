@@ -59,12 +59,27 @@ def unlike_song():
     sp.current_user_saved_tracks_delete([song])
 
 
+def toggle_shuffle(status=True):
+    sp.shuffle(status)
+
+
+def toggle_repeat(state="context"):
+    sp.repeat(state)
+
+
 def prompt_for_command(options):
     print("what to do...")
     response = input()
 
     if options.get(response) != None:
-        options[response]()
+        if response == "shuffle off":
+            options[response](False)
+        elif response == "repeat song":
+            options[response]("track")
+        elif response == "repeat off":
+            options[response]("off")
+        else:
+            options[response]()
 
 
 def main():
@@ -72,9 +87,14 @@ def main():
         "play": play_song,
         "pause": pause_song,
         "current song": get_current_song,
-        "saved tracks": get_saved_tracks,
+        # "saved tracks": get_saved_tracks,
         "like": like_song,
         "unlike": unlike_song,
+        "shuffle on": toggle_shuffle,
+        "shuffle off": toggle_shuffle,
+        "repeat": toggle_repeat,
+        "repeat song": toggle_repeat,
+        "repeat off": toggle_repeat,
     }
 
     while True:
