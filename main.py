@@ -1,4 +1,5 @@
 import spotipy
+import json
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -6,7 +7,7 @@ cid = "4621674ac5b94fdeab73a3561b46ab3c"
 secret = "abbbe4289b6c430296e26d2ca99ab8f0"
 username = "damon.black.dwb"
 # space seperated when using multiple scopes
-scope = "user-read-currently-playing user-modify-playback-state"
+scope = "user-read-currently-playing user-modify-playback-state playlist-modify-public user-library-read user-library-modify"
 
 token = util.prompt_for_user_token(
     username,
@@ -22,13 +23,65 @@ if token:
 
 def get_current_song():
     song_information = sp.currently_playing()["item"]
+    song = {
+        "artist": song_information["artists"][0]["name"],
+        "name": song_information["name"],
+        "id": song_information["id"],
+        "href": song_information["href"],
+    }
 
-    print(song_information)
+    # sp.track(song_information["id"])
+
+    print(json.dumps(song, indent=2))
+
+
+def get_saved_tracks():
+    tracks = sp.current_user_saved_tracks()
+
+    print(json.dumps(tracks["items"][:3], indent=2))
 
 
 def pause_song():
     sp.pause_playback()
 
 
-get_current_song()
-pause_song()
+def play_song():
+    sp.start_playback()
+
+
+def like_song():
+    song = sp.currently_playing()["item"]["id"]
+    sp.current_user_saved_tracks_add([song])
+
+
+def unlike_song():
+    song = sp.currently_playing()["item"]["id"]
+    sp.current_user_saved_tracks_delete([song])
+
+
+def prompt_for_command(options):
+    print("what to do...")
+    response = input()
+
+    if options.get(response) != None:
+        options[response]()
+
+
+def main():
+    options = {
+        "play": play_song,
+        "pause": pause_song,
+        "current song": get_current_song,
+        "saved tracks": get_saved_tracks,
+        "like": like_song,
+        "unlike": unlike_song,
+    }
+
+    while True:
+        prompt_for_command(options)
+
+
+# get_current_song()
+# pause_song()
+
+main()
