@@ -53,8 +53,35 @@ def pause_song():
     sp.pause_playback()
 
 
-def play_song():
-    sp.start_playback()
+# def play_song():
+#     sp.start_playback()
+
+
+def play_song(name=None, artist=None):
+    print("in")
+    print(name)
+    print(artist)
+    if artist != None:
+        # search for track
+        q = "name={name},artist={artist}".format(name=name, artist=artist)
+        song = sp.search(q)  # ["tracks"]["items"][0]
+        print(json.dumps(song, indent=2))
+        # Add track to queue
+        sp.add_to_queue(song["uri"])
+        # go to next song
+        sp.next_track()
+    elif name != None:
+        # search for track
+        q = "name={name}".format(name=name)
+        print(q)
+        song = sp.search(q)["tracks"]["items"][0]
+        # print(json.dumps(song["uri"], indent=2))
+        # Add track to queue
+        sp.add_to_queue(song["uri"])
+        # go to next song
+        sp.next_track()
+    else:
+        sp.start_playback()
 
 
 def like_song():
@@ -99,6 +126,16 @@ def prompt_for_command(options):
         options[response]("off")
     elif "set volume" in response:
         options["set volume"](response.split(" ")[2])
+    elif "play" in response:
+        parts = response.split(" ")
+        if "by" in response:
+            # need to combine parts until by
+            options["play"](parts[1], parts[3])
+        elif response == "play":
+            options[response]()
+        else:
+            # need to combine parts after play
+            options["play"](parts[1])
     else:
         if options.get(response) != None:
             options[response]()
